@@ -1,0 +1,14 @@
+name: gmail-to-contacts
+
+services:
+  gmail-to-contacts:
+    build: .
+    image: gmail-to-contacts
+    working_dir: /app
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./credentials.json:/app/credentials.json:ro
+      # Tokens and state live here and are written by the container.
+      - ./data:/app/data

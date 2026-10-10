@@ -1,0 +1,8 @@
+credentials.json
+config.yaml
+data/
+logs/
+.git/
+.venv/
+__pycache__/
+tests/

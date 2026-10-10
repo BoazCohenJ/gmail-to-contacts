@@ -1,0 +1,43 @@
+# Copy to config.yaml and edit. config.yaml is git-ignored.
+
+# Gmail search that selects candidate emails. Use normal Gmail search syntax.
+# Always include is:unread: processed emails are marked read, which is how
+# they drop out of the next search.
+gmail_query: 'is:unread "Welcome to Acme Fitness"'
+
+# Mark an email as read once its contacts were created (default: true).
+mark_as_read: true
+
+rules:
+  # Rules are checked in order; the first one that matches an email wins.
+  - name: class-signup
+
+    # The email must contain ANY of these strings (in the body or subject)...
+    match_text:
+      - "Welcome to Acme Fitness"
+    # ...and, optionally, its subject must contain ANY of these.
+    # subject_contains: ["New signup"]
+
+    # How to pull data out of the email.
+    extract:
+      # "labels": values that follow fixed labels, like "First name: Dana".
+      type: labels
+      fields:
+        first_name: "First name:"
+        last_name: {label: "Last name:", multiword: true}  # multiword keeps the whole value
+        phone: "Phone:"
+        parent_name: {label: "Parent name:", multiword: true}
+        parent_phone: {label: "Parent phone:"}
+      # Every field is required unless marked optional: true. If one is missing
+      # the email is left unread and a warning is printed.
+
+    # Contacts to create. {field} placeholders come from extract.fields, plus
+    # {message_id} and {subject}. You can create several contacts per email.
+    contacts:
+      - given_name: "{first_name}"
+        family_name: "{last_name} (Acme)"
+        phone: "{phone}"
+        notes: "Parent: {parent_name} {parent_phone}\nSource email: {message_id}"
+      - given_name: "{parent_name} (parent of {first_name} {last_name})"
+        phone: "{parent_phone}"
+        notes: "Source email: {message_id}"

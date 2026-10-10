@@ -1,0 +1,33 @@
+# Example: pick fields out of an order-notification email with regular
+# expressions, and skip duplicate copies of the same order.
+
+gmail_query: 'is:unread subject:"New order"'
+
+rules:
+  - name: shop-order
+    subject_contains: ["New order"]
+
+    extract:
+      type: regex
+      fields:
+        order_number:
+          regex: '#\s*(\d+)'        # the first capture group is the value
+          source: subject            # "subject" or "body" (default: body)
+        name:
+          regex: 'Billing address\s*\n(.+)'
+        phone:
+          regex: '((?:\+?\d{1,3}[-\s]?)?\d{2,3}[-\s]?\d{3}[-\s]?\d{4})'
+        email:
+          regex: '([\w.+-]+@[\w-]+\.[\w.-]+)'
+          optional: true
+
+    # Forwarded copies of an email get a new message ID. If two emails render
+    # the same dedupe_key, contacts are only created for the first.
+    dedupe_key: "order-{order_number}"
+
+    contacts:
+      - given_name: "{name}"
+        family_name: "(shop customer)"
+        phone: "{phone}"
+        email: "{email}"
+        notes: "Order #{order_number}\nSource email: {message_id}"

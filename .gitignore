@@ -1,0 +1,11 @@
+# Secrets and personal data - never commit these
+credentials.json
+config.yaml
+data/
+logs/
+*.log
+*.log.*
+
+__pycache__/
+.venv/
+.pytest_cache/
