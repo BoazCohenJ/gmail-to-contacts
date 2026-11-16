@@ -1,7 +1,7 @@
 # Example: pick fields out of an order-notification email with regular
 # expressions, and skip duplicate copies of the same order.
 
-gmail_query: 'is:unread subject:"New order"'
+gmail_query: 'newer_than:3d subject:"New order"'
 
 rules:
   - name: shop-order

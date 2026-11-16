@@ -533,6 +533,9 @@ def main():
     print(f'Found {len(messages)} candidate messages')
 
     state = load_state()
+    # Skip emails that already produced contacts, so they aren't downloaded again.
+    messages = [m for m in messages if not state.get(m['id'], {}).get('done')]
+    print(f'{len(messages)} of them are new')
     records = []
     for message in messages:
         record = process_message(

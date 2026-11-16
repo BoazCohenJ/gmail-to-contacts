@@ -6,7 +6,7 @@ Watch a Gmail inbox for emails that match rules you define, pull names and phone
 
 ## What it does
 
-1. Searches Gmail with a query you choose (for example `is:unread "Welcome to Acme"`).
+1. Searches Gmail with a query you choose (for example `newer_than:3d "Welcome to Acme"`).
 2. Checks each result against your rules, in order. The first rule that matches wins.
 3. Extracts fields from the email, either from fixed labels (`First name: Dana`) or with regular expressions.
 4. Creates one or more Google Contacts from templates such as `{first_name} {last_name} (Acme)`.
@@ -78,7 +78,7 @@ The program runs once and exits. Run it on a schedule with cron, using the wrapp
 ## Configuration
 
 ```yaml
-gmail_query: 'is:unread "Welcome to Acme Fitness"'
+gmail_query: 'newer_than:3d "Welcome to Acme Fitness"'
 mark_as_read: true
 
 rules:
@@ -105,7 +105,7 @@ rules:
 
 | Key | Meaning |
 |---|---|
-| `gmail_query` | Gmail search that selects candidate emails. Keep `is:unread` in it so processed emails drop out of the results. |
+| `gmail_query` | Gmail search that selects candidate emails. Prefer a window such as `newer_than:3d` over `is:unread`: an email you open yourself before the next run would otherwise be missed. Processed emails are skipped through `state.json`, and the window lets a later run catch up after a failed one, so keep it wider than your run interval. |
 | `mark_as_read` | Mark emails as read after their contacts were created. Default `true`. |
 | `rules[].match_text` | Email body or subject must contain any of these strings. |
 | `rules[].subject_contains` | Subject must contain any of these strings. |

@@ -1,9 +1,11 @@
 # Copy to config.yaml and edit. config.yaml is git-ignored.
 
 # Gmail search that selects candidate emails. Use normal Gmail search syntax.
-# Always include is:unread: processed emails are marked read, which is how
-# they drop out of the next search.
-gmail_query: 'is:unread "Welcome to Acme Fitness"'
+# Use a time window (newer_than) rather than is:unread: an email you open
+# yourself before the next run would otherwise never be processed. Already
+# processed emails are skipped through state.json, and the window also lets a
+# later run catch up after a failed one. Keep it wider than the run interval.
+gmail_query: 'newer_than:3d "Welcome to Acme Fitness"'
 
 # Mark an email as read once its contacts were created (default: true).
 mark_as_read: true
